@@ -1,4 +1,15 @@
 apply plugin: 'java'
+apply plugin: 'maven'
+uploadArchives {
+    repositories.mavenDeployer {
+        repository(url: "file://maven_deploy")
+        pom {
+            version = '1.0.0'
+            artifactId = 'libraven'
+            groupId = 'org.mj.libraven'
+        }
+    }
+}
 
 sourceCompatibility = 1.5
 version = '1.0'
