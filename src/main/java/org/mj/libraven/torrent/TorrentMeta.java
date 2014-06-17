@@ -149,9 +149,7 @@ public class TorrentMeta {
             meta.comment = infoMap.get("comment").toString();
         }
 
-        meta.infoHash = meta.generateInfoHash();
-        generateInfoHash(infoMap);
-
+        meta.infoHash = generateInfoHash(infoMap);
 
         return meta;
     }
@@ -162,18 +160,6 @@ public class TorrentMeta {
         return DigestUtils.sha1Hex(encodedInfo);
     }
 
-    private String generateInfoHash() {
-        TreeMap<String, Object> infoMap = new TreeMap<String, Object>();
-        infoMap.put("name", info.name);
-        infoMap.put("piece length", info.piece_len);
-        List<ByteString> ps = info.pieces;
-        infoMap.put("pieces", info.pieces);
-        infoMap.put("length", info.files.get(0).length);
-
-        byte[] encodedInfo = BEncoder.encode(infoMap).value();
-
-        return DigestUtils.sha1Hex(encodedInfo);
-    }
 
     public static class FileInfo {
         public String path = null;
