@@ -18,12 +18,34 @@ package org.mj.libraven.bencode;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.*;
 
 public class BEncoder {
+
+    public static <E> ByteString encode(E val) {
+        if (val == null) {
+            return null;
+        }
+
+        if (val instanceof String) {
+            return _encode((String) val);
+        } else if (val instanceof ByteString) {
+            return _encode(((ByteString) val).value());
+        } else if (val instanceof byte[]) {
+            return _encode((byte[]) val);
+        } else if (val instanceof Number) {
+            if (val instanceof Float || val instanceof Double) {
+                throw new UnsupportedOperationException("Cannot be floating point number");
+            }
+            return _encode(((Number) val).longValue());
+        } else if (val instanceof List) {
+            return _encode((List) val);
+        } else if (val instanceof Map) {
+            return _encode((Map) val);
+        }
+
+        throw new UnsupportedOperationException("Unsupported type");
+    }
 
     /**
      * Encode a string using bencode
@@ -31,7 +53,7 @@ public class BEncoder {
      * @param val
      * @return
      */
-    public static ByteString encode(String val) {
+    private static ByteString _encode(String val) {
         if (val == null) {
             return null;
         }
@@ -46,15 +68,20 @@ public class BEncoder {
         return result;
     }
 
-    /**
-     * Encode a integer using bencode
-     *
-     * @param val
-     * @return
-     */
-    public static ByteString encode(int val) {
-        return encode((long) val);
+    private static ByteString _encode(byte[] val) {
+        if (val == null) {
+            return null;
+        }
+        StringBuffer len = new StringBuffer(String.valueOf(val.length));
+        len.append(":");
+
+        ByteString result = new ByteString(len.length() + val.length);
+        result.set(0, len.toString().getBytes());
+        result.set(len.length(), val);
+
+        return result;
     }
+
 
     /**
      * Encode a integer using bencode
@@ -62,7 +89,7 @@ public class BEncoder {
      * @param val
      * @return
      */
-    public static ByteString encode(long val) {
+    private static ByteString _encode(long val) {
         StringBuffer buf = new StringBuffer();
         buf.append('i');
         buf.append(val);
@@ -87,7 +114,7 @@ public class BEncoder {
      * @param list
      * @return
      */
-    public static ByteString encode(List list) {
+    private static ByteString _encode(List list) {
         if (list == null || list.size() == 0) {
             return null;
         }
@@ -96,25 +123,7 @@ public class BEncoder {
 
         buf.write('l');
         for (Object obj : list) {
-            if (obj instanceof List) {
-                writeByteString(buf, encode((List) obj));
-            } else if (obj instanceof Map) {
-                writeByteString(buf, encode((Map) obj));
-            } else if (obj instanceof Number) {
-                if (obj instanceof Float || obj instanceof Double) {
-                    throw new UnsupportedOperationException("List item cannot be floating point number");
-                }
-
-                writeByteString(buf, encode(((Number) obj).longValue()));
-            } else if (obj instanceof String) {
-                writeByteString(buf, encode((String) obj));
-            } else {
-                if (obj == null) {
-                    throw new NullPointerException("List item cannot be null");
-                }
-
-                throw new UnsupportedOperationException("Unsupported class: " + obj.getClass() + " for list");
-            }
+            writeByteString(buf, encode(obj));
         }
         buf.write('e');
         return new ByteString(buf.toString());
@@ -127,7 +136,7 @@ public class BEncoder {
      * @param map
      * @return
      */
-    public static ByteString encode(Map map) {
+    private static ByteString _encode(Map map) {
         if (map == null || map.size() == 0) {
             return null;
         }
@@ -140,36 +149,19 @@ public class BEncoder {
 
         buf.write('d');
 
-        for (Object keyObj : map.keySet()) {
+        TreeSet keySet = new TreeSet(map.keySet());
+        for (Object keyObj : keySet) {
             String key = (String) keyObj;
             writeByteString(buf, encode(key));
 
             Object obj = map.get(key);
-            if (obj instanceof List) {
-                writeByteString(buf, encode((List) obj));
-            } else if (obj instanceof Map) {
-                writeByteString(buf, encode((Map) obj));
-            } else if (obj instanceof Number) {
-                if (obj instanceof Float || obj instanceof Double) {
-                    throw new UnsupportedOperationException("List item cannot be floating point number");
-                }
-
-                writeByteString(buf, encode(((Number) obj).longValue()));
-            } else if (obj instanceof String) {
-                writeByteString(buf, encode((String) obj));
-            } else {
-                if (obj == null) {
-                    throw new NullPointerException("List item cannot be null");
-                }
-
-                throw new UnsupportedOperationException("Unsupported class: " + obj.getClass() + " for list");
-            }
+            ByteString bs = encode(obj);
+            writeByteString(buf, bs);
         }
 
         buf.write('e');
 
-        return new ByteString(buf.toString());
-
+        return new ByteString(buf.toByteArray());
     }
 
 }

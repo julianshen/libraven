@@ -25,7 +25,11 @@ import java.io.IOException;
 public class TorrentFileChecker {
     @Test
     public void checkTorrentFile() throws IOException {
-        TorrentMeta.loadFromFile(FileUtils.toFile(getClass().getResource("/test.torrent")).getAbsolutePath());
+        System.out.println("==ENCODE INFO===");
+        TorrentMeta torrent = TorrentMeta.loadFromFile(FileUtils.toFile(getClass().getResource("/test.torrent")).getAbsolutePath());
+
+        System.out.println(torrent.infoHash);
+        System.out.println("================");
     }
 
     @Test

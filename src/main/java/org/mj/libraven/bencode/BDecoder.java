@@ -18,6 +18,7 @@ package org.mj.libraven.bencode;
 
 
 import java.io.*;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -54,15 +55,16 @@ public class BDecoder {
         int strLen = Integer.parseInt(new String(out.toByteArray()));
         int i = 0;
         byte[] buf = new byte[strLen];
-        out = new ByteArrayOutputStream();
+
+        ByteBuffer outBuf = ByteBuffer.allocate(strLen);
 
         while (i < strLen) {
             int n = in.read(buf);
-            out.write(buf, 0, n);
+            outBuf.put(buf, 0, n);
             i += n;
         }
 
-        return new ByteString(out.toByteArray());
+        return new ByteString(outBuf.array());
     }
 
     private long decodeInteger() throws IOException {

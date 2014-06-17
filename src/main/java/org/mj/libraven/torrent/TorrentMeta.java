@@ -16,17 +16,16 @@
 
 package org.mj.libraven.torrent;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.mj.libraven.bencode.BDecoder;
+import org.mj.libraven.bencode.BEncoder;
 import org.mj.libraven.bencode.ByteString;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class TorrentMeta {
     public Info info = new Info();
@@ -36,6 +35,8 @@ public class TorrentMeta {
     public String comment; //optional
     public String createdBy; //optional
     public String encoding; //optional
+
+    public String infoHash; //generated
 
     private static void ensureField(Map map, String fieldName) throws IOException {
         if (!map.containsKey(fieldName)) {
@@ -148,7 +149,30 @@ public class TorrentMeta {
             meta.comment = infoMap.get("comment").toString();
         }
 
+        meta.infoHash = meta.generateInfoHash();
+        generateInfoHash(infoMap);
+
+
         return meta;
+    }
+
+    private static String generateInfoHash(Map infoMap) {
+        byte[] encodedInfo = BEncoder.encode(infoMap).value();
+
+        return DigestUtils.sha1Hex(encodedInfo);
+    }
+
+    private String generateInfoHash() {
+        TreeMap<String, Object> infoMap = new TreeMap<String, Object>();
+        infoMap.put("name", info.name);
+        infoMap.put("piece length", info.piece_len);
+        List<ByteString> ps = info.pieces;
+        infoMap.put("pieces", info.pieces);
+        infoMap.put("length", info.files.get(0).length);
+
+        byte[] encodedInfo = BEncoder.encode(infoMap).value();
+
+        return DigestUtils.sha1Hex(encodedInfo);
     }
 
     public static class FileInfo {

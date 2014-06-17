@@ -16,10 +16,12 @@
 
 package org.mj.libraven.bencode;
 
+import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
 public class BCoderChecker {
@@ -143,5 +145,29 @@ public class BCoderChecker {
     @Test
     public void checkDecodeComplexMap() throws IOException {
         new BDecoder("d6:attachd1:ai1e1:bi3e1:cli4ei5e3:abcee6:emailsl13:a@example.com9:b@aaa.come4:name6:Juliane").decode();
+    }
+
+    @Test
+    public void checkLoadFromFStream() throws IOException {
+        File input = FileUtils.toFile(getClass().getResource("/test.torrent"));
+        FileInputStream in = new FileInputStream(input);
+        Map map = (Map) new BDecoder(in).decode();
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        in = new FileInputStream(input);
+
+        int r = -1;
+
+        while((r = in.read()) != -1) {
+            out.write(r);
+        }
+
+        BufferedOutputStream bout = new BufferedOutputStream(new FileOutputStream("/tmp/a.torrent"));
+        bout.write(BEncoder.encode(map).value());
+        bout.flush();
+
+        byte[] val = ((ByteString)((Map)map.get("info")).get("pieces")).value();
+
+        Assert.assertArrayEquals(BEncoder.encode(map).value(), out.toByteArray());
     }
 }
