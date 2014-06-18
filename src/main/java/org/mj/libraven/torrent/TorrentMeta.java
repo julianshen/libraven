@@ -22,10 +22,12 @@ import org.mj.libraven.bencode.BEncoder;
 import org.mj.libraven.bencode.ByteString;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 public class TorrentMeta {
     public Info info = new Info();
@@ -160,6 +162,21 @@ public class TorrentMeta {
         return DigestUtils.sha1Hex(encodedInfo);
     }
 
+    public List<String> getAnnounces() {
+        ArrayList<String> result = new ArrayList<String>();
+
+        for (String announceItem : announce) {
+            result.add(announceItem);
+        }
+
+        for (List<String> announceItems : announceList) {
+            for (String announceItem : announceItems) {
+                result.add(announceItem);
+            }
+        }
+
+        return result;
+    }
 
     public static class FileInfo {
         public String path = null;
