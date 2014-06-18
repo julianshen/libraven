@@ -21,6 +21,7 @@ import org.junit.Test;
 import org.mj.libraven.torrent.TorrentMeta;
 
 import java.io.IOException;
+import java.util.List;
 
 public class TorrentFileChecker {
     @Test
@@ -28,7 +29,14 @@ public class TorrentFileChecker {
         System.out.println("==ENCODE INFO===");
         TorrentMeta torrent = TorrentMeta.loadFromFile(FileUtils.toFile(getClass().getResource("/test.torrent")).getAbsolutePath());
 
-        System.out.println(torrent.infoHash);
+        System.out.println("Name" + torrent.info.name);
+        System.out.println("Info hash: " + torrent.infoHash);
+
+        List<String> announces = torrent.announces;
+        for(String announce:announces) {
+            System.out.println("Announce: " + announce);
+        }
+
         System.out.println("================");
     }
 

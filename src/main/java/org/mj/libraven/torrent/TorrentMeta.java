@@ -31,8 +31,8 @@ import java.util.Map;
 
 public class TorrentMeta {
     public Info info = new Info();
-    public List<String> announce = new ArrayList<String>(); //madatory
-    public List<List<String>> announceList = new ArrayList<List<String>>(); //optional
+    public List<String> announces = new ArrayList<String>();
+
     public long created; //optional
     public String comment; //optional
     public String createdBy; //optional
@@ -113,11 +113,11 @@ public class TorrentMeta {
         Object annObj = map.get("announce"); //single item of annource might be a string
 
         if (annObj instanceof ByteString) {
-            meta.announce.add(annObj.toString());
+            meta.announces.add(annObj.toString());
         } else {
             List ann = (List) annObj;
             for (Object obj : ann) {
-                meta.announce.add(obj.toString());
+                meta.announces.add(obj.toString());
             }
         }
 
@@ -130,16 +130,14 @@ public class TorrentMeta {
             meta.created = (Long) infoMap.get("creation date");
         }
 
-        if (infoMap.containsKey("announce-list")) {
-            List annList = (List) infoMap.get("announce-list");
+        if (map.containsKey("announce-list")) {
+            List annList = (List) map.get("announce-list");
 
             for (Object obj : annList) {
                 List strList = (List) obj;
-                ArrayList<String> list = new ArrayList<String>();
                 for (Object str : strList) {
-                    list.add(str.toString());
+                    meta.announces.add(str.toString());
                 }
-                meta.announceList.add(list);
             }
         }
 
@@ -162,29 +160,13 @@ public class TorrentMeta {
         return DigestUtils.sha1Hex(encodedInfo);
     }
 
-    public List<String> getAnnounces() {
-        ArrayList<String> result = new ArrayList<String>();
-
-        for (String announceItem : announce) {
-            result.add(announceItem);
-        }
-
-        for (List<String> announceItems : announceList) {
-            for (String announceItem : announceItems) {
-                result.add(announceItem);
-            }
-        }
-
-        return result;
-    }
-
     public static class FileInfo {
         public String path = null;
         public long length;
         public String md5sum = null; //optional
     }
 
-    static class Info {
+    public static class Info {
         public String name; //In single file node: file name. In multiple file mode: path name
         public long piece_len; //piece length manatory
         public List<ByteString> pieces = new ArrayList<ByteString>();
