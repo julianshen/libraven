@@ -16,6 +16,8 @@
 
 package org.mj.libraven.torrent;
 
+import org.apache.commons.codec.DecoderException;
+import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.mj.libraven.bencode.BDecoder;
 import org.mj.libraven.bencode.BEncoder;
@@ -152,6 +154,10 @@ public class TorrentMeta {
         meta.infoHash = generateInfoHash(infoMap);
 
         return meta;
+    }
+
+    public byte[] infoHash() throws DecoderException {
+        return Hex.decodeHex(infoHash.toCharArray());
     }
 
     private static String generateInfoHash(Map infoMap) {
