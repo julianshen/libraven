@@ -1,21 +1,49 @@
-apply plugin: 'java'
-apply plugin: 'maven'
-uploadArchives {
-    repositories.mavenDeployer {
-        repository(url: "file://maven_deploy")
-        pom {
-            version = '1.0.0'
-            artifactId = 'libraven'
-            groupId = 'org.mj.libraven'
-        }
+buildscript {
+    repositories {
+        jcenter()
     }
 }
 
-sourceCompatibility = 1.5
-version = '1.0'
+plugins {
+    id "com.jfrog.bintray" version "1.4"
+}
+
 
 repositories {
     mavenCentral()
+}
+
+apply plugin: 'java'
+apply plugin: 'maven-publish'
+
+
+sourceCompatibility = 1.5
+version = '1.0.1'
+
+bintray {
+    user = bintray_user
+    key = bintray_api_key
+
+    publications = ['main']
+
+    dryRun = false
+    publish = false 
+
+    pkg {
+        repo = 'maven'
+        name = 'libraven'
+        desc = 'A simple lib includes utilities used for bit torrent'
+        websiteUrl = 'https://github.com/julianshen/libraven'
+        issueTrackerUrl = 'https://github.com/julianshen/libraven'
+        vcsUrl = 'https://github.com/julianshen/libraven'
+        licenses = ['Apache-2.0']
+        labels = ['bittorrent']
+        publicDownloadNumbers = false
+
+        version {
+            name = project.version
+        }
+    }
 }
 
 dependencies {
