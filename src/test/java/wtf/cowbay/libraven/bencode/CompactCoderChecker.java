@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package org.mj.libraven.bencode;
+package wtf.cowbay.libraven.bencode;
 
 import org.apache.commons.codec.binary.Hex;
 import org.junit.Assert;
 import org.junit.Test;
-import org.mj.libraven.compact.CompactCoder;
+import wtf.cowbay.libraven.compact.CompactCoder;
 
 import java.util.List;
 

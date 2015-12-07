@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.mj.libraven.bencode;
+package wtf.cowbay.libraven.bencode;
 
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.io.FileUtils;

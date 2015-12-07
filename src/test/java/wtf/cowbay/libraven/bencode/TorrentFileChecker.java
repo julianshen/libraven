@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package org.mj.libraven.bencode;
+package wtf.cowbay.libraven.bencode;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
-import org.mj.libraven.torrent.TorrentMeta;
+import wtf.cowbay.libraven.torrent.TorrentMeta;
 
 import java.io.IOException;
 import java.util.List;

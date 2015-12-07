@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package org.mj.libraven.torrent;
+package wtf.cowbay.libraven.torrent;
 
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.mj.libraven.bencode.BDecoder;
-import org.mj.libraven.bencode.BEncoder;
-import org.mj.libraven.bencode.ByteString;
+import wtf.cowbay.libraven.bencode.BDecoder;
+import wtf.cowbay.libraven.bencode.BEncoder;
+import wtf.cowbay.libraven.bencode.ByteString;
 
 import java.io.FileInputStream;
 import java.io.IOException;

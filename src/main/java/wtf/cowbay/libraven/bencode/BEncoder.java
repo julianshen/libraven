@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.mj.libraven.bencode;
+package wtf.cowbay.libraven.bencode;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.mj.libraven.compact;
+package wtf.cowbay.libraven.compact;
 
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
