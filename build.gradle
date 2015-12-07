@@ -46,6 +46,17 @@ bintray {
     }
 }
 
+publishing {
+    publications {
+        main(MavenPublication) {
+            from components.java
+            groupId 'wtf.cowbay'
+            artifactId 'libraven'
+            version project.version
+        }
+    }
+}
+
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.11'
     compile 'commons-codec:commons-codec:1.9'
